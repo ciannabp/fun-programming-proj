@@ -1,26 +1,21 @@
 ---
 title: "fun-programming-proj"
-author: "Cianna Bedford-Petersen"
-date: "5/19/2019"
+author: "Cianna Bedford-Petersen & Andrew Fridman"
+date: "5/27/2019"
 output: html_document
 ---
 
-```{r setup}
-
-library(rio)
-library(tidyverse)
-library(viridis)
-library(prettyR)
-library(glue)
-
+```{r Setup}
+#Set options
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
-                      error = TRUE
-                      )
+                      error = TRUE)
 
+#Load libraries
+pacman::p_load(glue, prettyR, rio, tidyverse, viridis)
+
+#Import data
 data <- import("./Wave1.rda")
-
-
 ```
 
 ```{r custom function 1 and map_df}
