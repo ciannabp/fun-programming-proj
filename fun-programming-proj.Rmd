@@ -186,12 +186,14 @@ p <- screen_7 %>%
           y = "Average Weekly Screen Time (in minutes)") +
      theme(legend.position = "none")))
 
+#Defining plots
 p1 <- p$plot[[1]]
 p2 <- p$plot[[2]]
 p3 <- p$plot[[3]]
 p4 <- p$plot[[4]]
 p5 <- p$plot[[5]]
 
+#Plot grid
 require(cowplot)
 theme_set(theme_cowplot(font_size=12))
 plot_grid(p1, p2, p3, p4, p5)
