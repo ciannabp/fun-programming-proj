@@ -8,7 +8,7 @@ output:
     vertical_layout: fill
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 #Set options
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
@@ -20,6 +20,133 @@ pacman::p_load(colorblindr, flexdashboard, glue, prettyR, rio, tidyverse, viridi
 
 #Import data
 data <- import("./Wave1.rda")
+
+#####Visualization 1#####
+
+#Select only necessary variables and rename
+bfast <- data %>% 
+         select(H1GH23A, H1GH23B, H1GH23C, H1GH23D, H1GH23E, H1GH23F, H1GH23G, H1GH23H, H1GH23I, H1GH23J) %>% 
+         rename("milk" = H1GH23A,
+                "coffee or tea" = H1GH23B,
+                "cereal" = H1GH23C,
+                "fruit, juice" = H1GH23D,
+                "eggs" = H1GH23E,
+                "meat" = H1GH23F,
+                "snack foods" = H1GH23G,
+                "bread, toast, or rolls" = H1GH23H,
+                "other items" = H1GH23I,
+                "nothing" = H1GH23J
+                )
+
+#custom fucntion to count number that marked yes for a given breakfast food column
+count_1 <- function(x) {
+           sum(x == '(1) (1) Marked', na.rm=TRUE)
+}
+
+#apply to all columns
+bfast_count <- map_df(bfast, ~count_1(.x))
+
+#####Visualization 2#####
+
+#Select variables and rename
+screen <- data %>% 
+          select(H1GI20, H1GI6A, H1GI6B, H1GI6C, H1GI6D, H1GI6E, H1GI8, H1DA8, H1DA9, H1DA10) %>% 
+          rename("Grade" = H1GI20, 
+                 "White" = H1GI6A,
+                 "Black or African American" = H1GI6B,
+                 "American Indian or Native American" = H1GI6C,
+                 "Asian or Pacific Islander" = H1GI6D,
+                 "Other" = H1GI6E,
+                 "dominant_category" = H1GI8,
+                 "television" = H1DA8,
+                 "videos" = H1DA9,
+                 "games" = H1DA10
+                 )
+
+#Custom function to turn all variables numeric
+numeric_col <- function(n) {
+               lbls <- sort(levels(n))
+               lbls <- (sub("^\\([0-9]+\\) +(.+$)", "\\1", lbls))
+               n <- as.numeric(sub("^\\(0*([0-9]+)\\).+$", "\\1", n))
+               n <- add.value.labels(n, lbls)
+}
+
+#apply to all colummns
+screen_2 <- map_df(screen, ~numeric_col(.x))
+
+#Add a column that sums the number of race categories that each participant selected
+screen_3 <- screen_2 %>% 
+            mutate(identity = select(., White:Other) %>% 
+                   rowSums(na.rm = TRUE))
+
+
+#Filter for participants who only marked 1 race category
+#Gather data and filter for the 1 race category that each participant chose
+screen_4 <- screen_3 %>% 
+            filter(identity == 1) %>% 
+            gather(race, value, 
+                   White, 
+                   `Black or African American`, 
+                   `American Indian or Native American`, 
+                   `Asian or Pacific Islander`, 
+                   Other) %>% 
+            filter(value == 1)
+  
+#For those who identify with at least 2 race categories use the column indicating which race they identify with most
+#Convert the dominant race column to a categorical column titled race
+screen_5 <- screen_3 %>% 
+            filter(identity >=2) %>% 
+            rename(race = dominant_category) %>% 
+            mutate(race = dplyr::recode(race, 
+                   `1` = "White", 
+                   `2` = "Black or African American" ,
+                   `3` = "American Indian or Native American", 
+                   `4` = "Asian or Pacific Islander", 
+                   `5` = "Other"))
+  
+
+#Create one data frame that combines those who identifiy with 1 race category and those who identify with at least 2 race categories 
+screen_6 <- left_join(screen_4, screen_5)
+
+#Add column for weekly screen time by adding together tv, video, and videogame time
+screen_7 <-  screen_6 %>% 
+             mutate(screen_time = select(., television:games) %>% 
+             rowSums(na.rm = TRUE)) %>% 
+             mutate(Grade = factor(Grade)) %>% 
+             drop_na(c("Grade", "race"))
+
+#####Visualization 3#####
+
+#Tidy data to include only relevant variables
+sleep_raw <- data %>%
+             select(H1GI20, S60J, H1GH51, H1FS6) %>%
+             rename(Grade = "H1GI20",
+                    Insomnia = "S60J",
+                    Sleep_Hours = "H1GH51",
+                    Depression = "H1FS6") %>% 
+             mutate(Grade = as.factor(Grade)) %>% 
+             filter(Grade != "NA" &
+                    Insomnia != "NA" &
+                    Sleep_Hours != "NA")
+
+#Clean labels
+sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) 
+
+#Split data by grade
+by_grade <- sleep_tidy %>%
+            nest(-Grade)
+
+#Model comparison (total number of sleep hours as a covariate and moderator)
+sleep_models <- by_grade %>%
+                mutate(m1 = map(data, ~lm(Depression ~ Insomnia, data = .x)),
+                       m2 = map(data, ~lm(Depression ~ Insomnia + Sleep_Hours, data = .x)),
+                       comp12 = map2(m1, m2, anova),
+                       p12 = map_dbl(comp12, list("Pr(>F)", 2)))
+
+#Extracing the r^2 values by model across grade
+sleep_models2 <- sleep_models %>% 
+                 gather(model, output, m1:m2) %>%
+                 mutate(r2 = map_dbl(output, ~summary(.x)$r.squared))
 ```
 
 #Visualization 1
@@ -30,8 +157,20 @@ Column {data-width=750}
 ### Final Version
 
 ```{r Plot 1 Version 3}
-#Version 3 - Title
-
+#Version 3 - Common breakfast food choices by grade
+bfast_count %>% 
+            gather(food, count) %>% 
+            ggplot(aes(reorder(food, count), count)) +
+            geom_bar(aes(fill = food), stat="identity") + 
+            coord_flip() +
+            scale_fill_viridis_d(option="magma") +
+            theme_minimal() +
+            labs(title = "Common Breakfast Food Choices",
+                 subtitle = "For 7th-12th Graders",
+                 caption = "Data Collected 1994-1995",
+                 x = "",
+                 y = "Count") +
+            theme (legend.position = "none")
 ```
 
 > Description of plot
@@ -65,7 +204,37 @@ Column {data-width=750}
 ### Final Version
 
 ```{r Plot 2 Version 3}
-#Version 3 - Title
+#Version 3 - Average Weekly Screen Time across grade, faceted by racial identity
+p <- screen_7 %>% 
+     group_by(Grade, race) %>% 
+     summarize(mean_screen = mean(screen_time)) %>%
+     ungroup() %>% 
+     group_by(race) %>% 
+     nest() %>% 
+     mutate(plot = map2(data, race, ~
+     ggplot(.x, aes(reorder(Grade, desc(Grade)), mean_screen)) +
+     geom_col(aes(fill = Grade)) + 
+     coord_flip() +
+     scale_fill_viridis_d() +
+     theme_minimal() +
+     labs(title = "Average Weekly Screen Time",
+          subtitle = glue("For {.y} Students"),
+          caption = "Data Collected 1994-1995",
+          x = "Grade",
+          y = "Average Weekly Screen Time (in minutes)") +
+     theme(legend.position = "none")))
+
+#Defining plots
+p1 <- p$plot[[1]]
+p2 <- p$plot[[2]]
+p3 <- p$plot[[3]]
+p4 <- p$plot[[4]]
+p5 <- p$plot[[5]]
+
+#Plot grid
+require(cowplot)
+theme_set(theme_cowplot(font_size = 12))
+plot_grid(p1, p2, p3, p4, p5)
 
 ```
 
@@ -100,8 +269,18 @@ Column {data-width=750}
 ### Final Version
 
 ```{r Plot 3 Version 3}
-#Version 3 - Title
-
+#Version 3 - R^2 values of model comparison for insomnia predicting depression across grade
+ggplot(sleep_models2, aes(model, r2)) +
+    geom_col(aes(fill = model)) +
+    facet_wrap(~Grade) +
+    scale_fill_OkabeIto() +
+    labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting Concurrent       
+         Depression Across Grades 7-12",
+         caption = "Data Collected 1994-1995",
+         x = "Model",
+         y = "R^2") +
+    guides(fill = "none") +
+    theme(legend.position = "none")
 ```
 
 > Description of plot
