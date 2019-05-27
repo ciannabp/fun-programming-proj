@@ -13,7 +13,7 @@ knitr::opts_chunk$set(warning = FALSE,
                       )
 
 #Load libraries
-pacman::p_load(glue, prettyR, rio, tidyverse, viridis)
+pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis)
 
 #Import data
 data <- import("./Wave1.rda")
@@ -197,7 +197,7 @@ theme_set(theme_cowplot(font_size=12))
 plot_grid(p1, p2, p3, p4, p5)
 ```
 
-```{r Custom Function 3 and map_*}
+```{r Custom Function 3 and map2}
 
 #Do insomnia symptoms predict depressed mood across adolescence?
 
@@ -220,55 +220,29 @@ sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x))
 by_grade <- sleep_tidy %>%
             nest(-Grade)
 
-#Three competing models
+#Model comparison (total number of sleep hours as a covariate and moderator)
 sleep_models <- by_grade %>%
                 mutate(m1 = map(data, ~lm(Depression ~ Insomnia, data = .x)),
                        m2 = map(data, ~lm(Depression ~ Insomnia + Sleep_Hours, data = .x)),
-                       m3 = map(data, ~lm(Depression ~ Insomnia*Sleep_Hours, data = .x)))
-sleep_models
+                       comp12 = map2(m1, m2, anova),
+                       p12 = map_dbl(comp12, list("Pr(>F)", 2)))
 
+#Extracing the r^2 values by model across grade
+sleep_models2 <- sleep_models %>% 
+                 gather(model, output, m1:m2) %>%
+                 mutate(r2 = map_dbl(output, ~summary(.x)$r.squared))
 
-
-
-#Iterate predictive model by grade
-sleep_model <- sleep_tidy %>%
-               group_by(Grade) %>%
-               nest() %>%
-               mutate(model = map(data, ~lm(Depression ~ Insomnia, data = .x))) 
-sleep_model
-
-#Pull all coeffients
-pull_coef <- function(model) {
-             coefs <- coef(model)
-             data.frame(coefficient = names(coefs),
-                        value = coefs)
-}
-
-#Apply to our original function
-sleep_model2 <- sleep_model %>%
-                mutate(coefs = map(model, pull_coef)) %>%
-                select(Grade, coefs) %>%
-                unnest() %>% 
-                spread(coefficient, value)
-
-#Plot our results
-ggplot(sleep_tidy, aes(x = Insomnia, y = Depression)) +
-       geom_point() +
-       stat_smooth(method = "lm", formula = Depression ~ Insomnia, size = 1) +
-       theme_minimal()
-
-#Messing around with the models
-m1 <- lm(Depression ~ Insomnia, data = sleep_tidy)
-m2 <- lm(Depression ~ Insomnia + Sleep_Hours, data = sleep_tidy)
-m3 <- lm(Depression ~ Insomnia*Sleep_Hours, data = sleep_tidy)
-summary(m1)
-summary(m2)
-summary(m3)
-anova(m1, m2)
-anova(m1, m3)
-anova(m2, m3)
-
-
-
+#Plotting the r^2 values by model across grade
+ggplot(sleep_models2, aes(model, r2)) +
+    geom_col(aes(fill = model)) +
+    facet_wrap(~Grade) +
+    scale_fill_OkabeIto() +
+    labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting Concurrent       
+         Depression Across Grades 7-12",
+         caption = "Data Collected 1994-1995",
+         x = "Model",
+         y = "R^2") +
+    guides(fill = "none") +
+    theme(legend.position = "none")
 ```
 
