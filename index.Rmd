@@ -9,30 +9,121 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
+#Set options
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE,
+                      error = TRUE
+                      )
+
+#Load libraries
+pacman::p_load(colorblindr, flexdashboard, glue, prettyR, rio, tidyverse, viridis)
+
+#Import data
+data <- import("./Wave1.rda")
 ```
 
-Column {data-width=650}
+#Visualization 1
+
+Column {data-width=750}
 -----------------------------------------------------------------------
 
-### Chart A
+### Final Version
 
-```{r}
+```{r Plot 1 Version 3}
+#Version 3 - Title
 
 ```
 
-Column {data-width=350}
+> Description of plot
+
+Column {data-width=400}
 -----------------------------------------------------------------------
 
-### Chart B
+### Version 2
 
-```{r}
+```{r Plot 1 Version 2}
+#Version 2 - Title
+
+```
+
+> Description of plot
+
+### Version 1
+
+```{r Plot 1 Version 1}
+#Version 1 - Title
 
 ```
 
-### Chart C
+> Description of plot
 
-```{r}
+#Visualization 2
+
+Column {data-width=750}
+-----------------------------------------------------------------------
+
+### Final Version
+
+```{r Plot 2 Version 3}
+#Version 3 - Title
 
 ```
+
+> Description of plot
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+
+### Version 2
+
+```{r Plot 2 Version 2}
+#Version 2 - Title
+
+```
+
+> Description of plot
+
+### Version 1
+
+```{r Plot 2 Version 1}
+#Version 1 - Title
+
+```
+
+> Description of plot
+
+#Visualization 3
+
+Column {data-width=750}
+-----------------------------------------------------------------------
+
+### Final Version
+
+```{r Plot 3 Version 3}
+#Version 3 - Title
+
+```
+
+> Description of plot
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+
+### Version 2
+
+```{r Plot 3 Version 2}
+#Version 2 - Title
+
+```
+
+> Description of plot
+
+### Version 1
+
+```{r Plot 3 Version 1}
+#Version 1 - Title
+
+```
+
+> Description of plot
 
