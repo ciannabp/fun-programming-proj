@@ -207,16 +207,68 @@ sleep_raw <- data %>%
              rename(Grade = "H1GI20",
                     Insomnia = "S60J",
                     Sleep_Hours = "H1GH51",
-                    Depression = "H1FS6")
+                    Depression = "H1FS6") %>% 
+             mutate(Grade = as.factor(Grade)) %>% 
+             filter(Grade != "NA" &
+                    Insomnia != "NA" &
+                    Sleep_Hours != "NA")
 
 #Clean labels
-sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x))
+sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) 
 
-#Iterate predictive model
+#Split data by grade
+by_grade <- sleep_tidy %>%
+            nest(-Grade)
 
-         
-        
-         
+#Three competing models
+sleep_models <- by_grade %>%
+                mutate(m1 = map(data, ~lm(Depression ~ Insomnia, data = .x)),
+                       m2 = map(data, ~lm(Depression ~ Insomnia + Sleep_Hours, data = .x)),
+                       m3 = map(data, ~lm(Depression ~ Insomnia*Sleep_Hours, data = .x)))
+sleep_models
+
+
+
+
+#Iterate predictive model by grade
+sleep_model <- sleep_tidy %>%
+               group_by(Grade) %>%
+               nest() %>%
+               mutate(model = map(data, ~lm(Depression ~ Insomnia, data = .x))) 
+sleep_model
+
+#Pull all coeffients
+pull_coef <- function(model) {
+             coefs <- coef(model)
+             data.frame(coefficient = names(coefs),
+                        value = coefs)
+}
+
+#Apply to our original function
+sleep_model2 <- sleep_model %>%
+                mutate(coefs = map(model, pull_coef)) %>%
+                select(Grade, coefs) %>%
+                unnest() %>% 
+                spread(coefficient, value)
+
+#Plot our results
+ggplot(sleep_tidy, aes(x = Insomnia, y = Depression)) +
+       geom_point() +
+       stat_smooth(method = "lm", formula = Depression ~ Insomnia, size = 1) +
+       theme_minimal()
+
+#Messing around with the models
+m1 <- lm(Depression ~ Insomnia, data = sleep_tidy)
+m2 <- lm(Depression ~ Insomnia + Sleep_Hours, data = sleep_tidy)
+m3 <- lm(Depression ~ Insomnia*Sleep_Hours, data = sleep_tidy)
+summary(m1)
+summary(m2)
+summary(m3)
+anova(m1, m2)
+anova(m1, m3)
+anova(m2, m3)
+
+
 
 ```
 
