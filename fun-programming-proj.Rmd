@@ -197,9 +197,26 @@ theme_set(theme_cowplot(font_size=12))
 plot_grid(p1, p2, p3, p4, p5)
 ```
 
-```{r Custom Function 3}
+```{r Custom Function 3 and map_*}
 
-#
+#Do insomnia symptoms predict depressed mood across adolescence?
+
+#Tidy data to include only relevant variables
+sleep_raw <- data %>%
+             select(H1GI20, S60J, H1GH51, H1FS6) %>%
+             rename(Grade = "H1GI20",
+                    Insomnia = "S60J",
+                    Sleep_Hours = "H1GH51",
+                    Depression = "H1FS6")
+
+#Clean labels
+sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x))
+
+#Iterate predictive model
+
+         
+        
+         
 
 ```
 
