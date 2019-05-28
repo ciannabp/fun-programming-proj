@@ -175,27 +175,6 @@ bfast_count %>%
 
 > Description of plot
 
-Column {data-width=400}
------------------------------------------------------------------------
-
-### Version 2
-
-```{r Plot 1 Version 2}
-#Version 2 - Title
-
-```
-
-> Description of plot
-
-### Version 1
-
-```{r Plot 1 Version 1}
-#Version 1 - Title
-
-```
-
-> Description of plot
-
 #Visualization 2
 
 Column {data-width=750}
@@ -243,24 +222,6 @@ plot_grid(p1, p2, p3, p4, p5)
 Column {data-width=400}
 -----------------------------------------------------------------------
 
-### Version 2
-
-```{r Plot 2 Version 2}
-#Version 2 - Title
-
-```
-
-> Description of plot
-
-### Version 1
-
-```{r Plot 2 Version 1}
-#Version 1 - Title
-
-```
-
-> Description of plot
-
 #Visualization 3
 
 Column {data-width=750}
@@ -287,22 +248,3 @@ ggplot(sleep_models2, aes(model, r2)) +
 
 Column {data-width=400}
 -----------------------------------------------------------------------
-
-### Version 2
-
-```{r Plot 3 Version 2}
-#Version 2 - Title
-
-```
-
-> Description of plot
-
-### Version 1
-
-```{r Plot 3 Version 1}
-#Version 1 - Title
-
-```
-
-> Description of plot
-
