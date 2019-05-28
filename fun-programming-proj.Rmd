@@ -178,10 +178,10 @@ p <- screen_7 %>%
           x = "Grade",
           y = "Average Weekly Screen Time (in minutes)") +
      theme(legend.position = "none",
-           plot.title = element_text(size = 12),
-           plot.subtitle = element_text(size = 10),
-           plot.caption = element_text(size = 6),
-           axis.title = element_text(size = 10))))
+           plot.title = element_text(size = 8),
+           plot.subtitle = element_text(size = 7),
+           plot.caption = element_text(size = 5),
+           axis.title = element_text(size = 6))))
 
 #Defining plots
 p1 <- p$plot[[1]]

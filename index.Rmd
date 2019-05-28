@@ -204,15 +204,15 @@ p <- screen_7 %>%
      scale_fill_viridis_d() +
      theme_minimal() +
      labs(title = "Average Weekly Screen Time",
-          subtitle = glue("For {.y} Students"),
+          subtitle = glue("{.y}"),
           caption = "Data Collected 1994-1995",
           x = "Grade",
           y = "Average Weekly Screen Time (in minutes)") +
      theme(legend.position = "none",
-           plot.title = element_text(size = 12),
-           plot.subtitle = element_text(size = 10),
-           plot.caption = element_text(size = 6),
-           axis.title = element_text(size = 10))))
+           plot.title = element_text(size = 8),
+           plot.subtitle = element_text(size = 7),
+           plot.caption = element_text(size = 5),
+           axis.title = element_text(size = 6))))
 
 #Defining plots
 p1 <- p$plot[[1]]
@@ -250,7 +250,7 @@ sleep_models2 %>%
                        y = "R^2") +
                   guides(fill = "none") +
                   theme(legend.position = "none",
-                        plot.title = element_text(size = 10))
+                        plot.title = element_text(size = 9))
 ```
 
 > Description of plot
