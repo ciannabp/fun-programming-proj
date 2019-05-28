@@ -249,9 +249,8 @@ sleep_models2 %>%
                   geom_col(aes(fill = model)) +
                   facet_wrap(~Grade) +
                   scale_fill_OkabeIto() +
-                  labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting      
+                  labs(title = "Insomnia (Model 1) vs. Insomnia and Total Sleep Time (Model 2) Predicting      
                        Depression",
-                       subtitle = "Across Grades 7-12",
                        caption = "Data Collected 1994-1995",
                        x = "Model",
                        y = "R^2") +
