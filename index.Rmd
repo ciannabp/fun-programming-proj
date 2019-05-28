@@ -151,7 +151,7 @@ sleep_models2 <- sleep_models %>%
 
 #Visualization 1
 
-Column {data-width=750}
+Column {data-width=1000}
 -----------------------------------------------------------------------
 
 ### Final Version
@@ -177,7 +177,7 @@ bfast_count %>%
 
 #Visualization 2
 
-Column {data-width=750}
+Column {data-width=1000}
 -----------------------------------------------------------------------
 
 ### Final Version
@@ -221,7 +221,7 @@ plot_grid(p1, p2, p3, p4, p5)
 
 #Visualization 3
 
-Column {data-width=750}
+Column {data-width=1000}
 -----------------------------------------------------------------------
 
 ### Final Version

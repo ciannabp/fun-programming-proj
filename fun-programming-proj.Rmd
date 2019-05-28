@@ -195,7 +195,7 @@ p5 <- p$plot[[5]]
 
 #Plot grid
 require(cowplot)
-theme_set(theme_cowplot(font_size=12))
+theme_set(theme_cowplot(font_size = 12))
 plot_grid(p1, p2, p3, p4, p5)
 ```
 
