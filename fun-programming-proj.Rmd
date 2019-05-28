@@ -184,7 +184,8 @@ p <- screen_7 %>%
           caption = "Data Collected 1994-1995",
           x = "Grade",
           y = "Average Weekly Screen Time (in minutes)") +
-     theme(legend.position = "none")))
+     theme(legend.position = "none",
+           plot.title = element_text(size = 10))
 
 #Defining plots
 p1 <- p$plot[[1]]
@@ -214,9 +215,16 @@ sleep_raw <- data %>%
              filter(Grade != "NA" &
                     Insomnia != "NA" &
                     Sleep_Hours != "NA")
-
+    
 #Clean labels
-sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) 
+sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) %>% 
+              mutate(Grade = dplyr::recode(Grade, 
+                     `7` = "Grade 7", 
+                     `8` = "Grade 8" ,
+                     `9` = "Grade 9", 
+                     `10` = "Grade 10", 
+                     `11` = "Grade 11",
+                     `12` = "Grade 12"))
 
 #Split data by grade
 by_grade <- sleep_tidy %>%
@@ -235,15 +243,19 @@ sleep_models2 <- sleep_models %>%
                  mutate(r2 = map_dbl(output, ~summary(.x)$r.squared))
 
 #Plotting the r^2 values by model across grade
-ggplot(sleep_models2, aes(model, r2)) +
-    geom_col(aes(fill = model)) +
-    facet_wrap(~Grade) +
-    scale_fill_OkabeIto() +
-    labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting Concurrent       
-         Depression Across Grades 7-12",
-         caption = "Data Collected 1994-1995",
-         x = "Model",
-         y = "R^2") +
-    guides(fill = "none") +
-    theme(legend.position = "none")
+sleep_models2 %>% 
+              mutate(fct_relevel(Grade, "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12")) %>% 
+              ggplot(aes(model, r2)) +
+                  geom_col(aes(fill = model)) +
+                  facet_wrap(~Grade) +
+                  scale_fill_OkabeIto() +
+                  labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting      
+                       Depression",
+                       subtitle = "Across Grades 7-12",
+                       caption = "Data Collected 1994-1995",
+                       x = "Model",
+                       y = "R^2") +
+                  guides(fill = "none") +
+                  theme(legend.position = "none",
+                        plot.title = element_text(size = 10))
 ```
