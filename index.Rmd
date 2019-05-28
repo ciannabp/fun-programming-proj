@@ -219,9 +219,6 @@ plot_grid(p1, p2, p3, p4, p5)
 
 > Description of plot
 
-Column {data-width=400}
------------------------------------------------------------------------
-
 #Visualization 3
 
 Column {data-width=750}
