@@ -13,6 +13,7 @@ knitr::opts_chunk$set(warning = FALSE,
                       )
 
 #Load libraries
+install.packages("pacman")
 pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis)
 
 #Import data
@@ -37,8 +38,7 @@ bfast <- data %>%
                 "snack foods" = H1GH23G,
                 "bread, toast, or rolls" = H1GH23H,
                 "other items" = H1GH23I,
-                "nothing" = H1GH23J
-                )
+                "nothing" = H1GH23J)
 
 #custom fucntion to count number that marked yes for a given breakfast food column
 count_1 <- function(x) {
@@ -87,8 +87,7 @@ screen <- data %>%
                  "dominant_category" = H1GI8,
                  "television" = H1DA8,
                  "videos" = H1DA9,
-                 "games" = H1DA10
-                 )
+                 "games" = H1DA10)
 
 #Custom function to turn all variables numeric
 numeric_col <- function(n) {
@@ -185,7 +184,10 @@ p <- screen_7 %>%
           x = "Grade",
           y = "Average Weekly Screen Time (in minutes)") +
      theme(legend.position = "none",
-           plot.title = element_text(size = 10))
+           plot.title = element_text(size = 12),
+           plot.subtitle = element_text(size = 10),
+           plot.caption = element_text(size = 6),
+           axis.title = element_text(size = 10))))
 
 #Defining plots
 p1 <- p$plot[[1]]
@@ -249,8 +251,7 @@ sleep_models2 %>%
                   geom_col(aes(fill = model)) +
                   facet_wrap(~Grade) +
                   scale_fill_OkabeIto() +
-                  labs(title = "Insomnia (Model 1) vs. Insomnia and Total Sleep Time (Model 2) Predicting      
-                       Depression",
+                  labs(title = "Insomnia (Model 1) vs. Insomnia and Total Sleep Time (Model 2) Predicting Depression",
                        caption = "Data Collected 1994-1995",
                        x = "Model",
                        y = "R^2") +
