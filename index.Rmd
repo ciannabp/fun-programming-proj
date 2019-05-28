@@ -232,13 +232,15 @@ ggplot(sleep_models2, aes(model, r2)) +
     geom_col(aes(fill = model)) +
     facet_wrap(~Grade) +
     scale_fill_OkabeIto() +
-    labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting Concurrent       
-         Depression Across Grades 7-12",
+    labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting       
+         Depression",
+         subtitle = "",
          caption = "Data Collected 1994-1995",
          x = "Model",
          y = "R^2") +
     guides(fill = "none") +
-    theme(legend.position = "none")
+    theme(legend.position = "none",
+          plot.title = element_text(size = 10))
 ```
 
 > Description of plot
