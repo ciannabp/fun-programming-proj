@@ -242,6 +242,3 @@ ggplot(sleep_models2, aes(model, r2)) +
 ```
 
 > Description of plot
-
-Column {data-width=400}
------------------------------------------------------------------------
