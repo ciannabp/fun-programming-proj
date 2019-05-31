@@ -2,21 +2,26 @@
 title: "fun-programming-proj"
 author: "Cianna Bedford-Petersen & Andrew Fridman"
 date: "5/27/2019"
-output: html_document
+output:
+  html_document
 ---
 
 ```{r Setup}
 #Set options
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
-                      error = TRUE)
+                      error = TRUE,
+                      fig.align = "center")
 
 #Load libraries
-install.packages("pacman")
-pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis)
+#install.packages("pacman") # ASH: to properly knit the file I think this has to be commented out?
+pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis) # ASH: I have never seen this function before--very nice
 
 #Import data
 data <- import("./Wave1.rda")
+
+#ASH: Just an FYI that your directory contains two project files; I'd delete one, because (while it matters less if they're in the exact same folder) it can screw up working directory issues if you have a project within a project.
+
 ```
 
 ```{r Custom Function 1 and map_df}
@@ -27,7 +32,8 @@ data <- import("./Wave1.rda")
 
 #Select only necessary variables and rename
 bfast <- data %>% 
-         select(H1GH23A, H1GH23B, H1GH23C, H1GH23D, H1GH23E, H1GH23F, H1GH23G, H1GH23H, H1GH23I, H1GH23J) %>% 
+         select(H1GH23A, H1GH23B, H1GH23C, H1GH23D, H1GH23E, 
+                H1GH23F, H1GH23G, H1GH23H, H1GH23I, H1GH23J) %>% # ASH: I modifed styling here; line of code was pretty long
          rename("milk" = H1GH23A,
                 "coffee or tea" = H1GH23B,
                 "cereal" = H1GH23C,
@@ -59,7 +65,7 @@ bfast_count %>%
             ggplot(aes(reorder(food, count), count)) +
             geom_bar(aes(fill = food), stat="identity") + 
             coord_flip() +
-            scale_fill_viridis_d(option="magma") +
+            scale_fill_viridis_d(option="magma") + # ASH: I'm happy you are using the viridis palettes.. they are my fav :)
             theme_minimal() +
             labs(title = "Common Breakfast Food Choices",
                  subtitle = "For 7th-12th Graders",
@@ -75,7 +81,8 @@ bfast_count %>%
 
 #Select variables and rename
 screen <- data %>% 
-          select(H1GI20, H1GI6A, H1GI6B, H1GI6C, H1GI6D, H1GI6E, H1GI8, H1DA8, H1DA9, H1DA10) %>% 
+          select(H1GI20, H1GI6A, H1GI6B, H1GI6C, H1GI6D, 
+                 H1GI6E, H1GI8, H1DA8, H1DA9, H1DA10) %>% 
           rename("Grade" = H1GI20, 
                  "White" = H1GI6A,
                  "Black or African American" = H1GI6B,
@@ -193,7 +200,10 @@ p5 <- p$plot[[5]]
 #Plot grid
 require(cowplot)
 theme_set(theme_cowplot(font_size = 12))
-plot_grid(p1, p2, p3, p4, p5)
+plot_grid(p1, p2, p3, p4, p5, labels = c("A", "B", "C", "D", "E"))
+
+# ASH: I have a feeling that, if not for the project requirements, you'd be facetting by race instead of using cowplot. 
+# ASH: In the final plot, is there a way to reduce the amount of repeated text (e.g., plot caption, plot title, axis labels)?
 ```
 
 ```{r map2}
@@ -228,10 +238,13 @@ by_grade <- sleep_tidy %>%
 
 #Model comparison (total number of sleep hours as a covariate and moderator)
 sleep_models <- by_grade %>%
-                mutate(m1 = map(data, ~lm(Depression ~ Insomnia, data = .x)),
-                       m2 = map(data, ~lm(Depression ~ Insomnia + Sleep_Hours, data = .x)),
+                mutate(m1 = map(data, 
+                                ~lm(Depression ~ Insomnia, data = .x)),
+                       m2 = map(data, 
+                                ~lm(Depression ~ Insomnia + Sleep_Hours, 
+                                    data = .x)), 
                        comp12 = map2(m1, m2, anova),
-                       p12 = map_dbl(comp12, list("Pr(>F)", 2)))
+                       p12 = map_dbl(comp12, list("Pr(>F)", 2))) #ASH: This is great
 
 #Extracing the r^2 values by model across grade
 sleep_models2 <- sleep_models %>% 
@@ -240,7 +253,13 @@ sleep_models2 <- sleep_models %>%
 
 #Plotting the r^2 values by model across grade
 sleep_models2 %>% 
-              mutate(fct_relevel(Grade, "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12")) %>% 
+              mutate(fct_relevel(Grade, 
+                                   "Grade 7", 
+                                   "Grade 8", 
+                                   "Grade 9", 
+                                   "Grade 10",  
+                                   "Grade 11", 
+                                   "Grade 12")) %>% 
               ggplot(aes(model, r2)) +
                   geom_col(aes(fill = model)) +
                   facet_wrap(~Grade) +
@@ -250,6 +269,36 @@ sleep_models2 %>%
                        x = "Model",
                        y = "R^2") +
                   guides(fill = "none") +
+                  theme_bw() +
                   theme(legend.position = "none",
-                        plot.title = element_text(size = 10))
+                        plot.title = element_text(size = 10, face = "bold"))
+
+# ASH: Here I'd recommend trying to incorporate some means of visualizing uncertainty (e.g., add error bars or star which model comparisons are significant)  
+# ASH: Also, there are a lot of bar graphs (Cam and I are also guilty of this).  If you intend to create some tutorial or something similar, maybe try to mix up the visualizations?
+  
 ```
+
+### Ashley's peer review breakdown:
+
+**Three areas of strength:**
+
+  + Excellent use of commentary; Seriously by far the best I've encountered thus far. I knew what you were trying to achieve with each line of code! 
+  + Great graphical presentation:
+      + Good use of color-blind friendly palette
+      + Each graph is clear/it doesn't take too much effort to understand the point of each graph
+  + The code itself is efficient and relatively advanced. For instance, I was super impressed with your numeric_col function. Pattern matching/replacement is extremely difficult!! It's obvious you both have mastered the tidyverse, as well.  
+  
+**At least one thing I learned:**
+
+  + Using `pacman::p_load` to load libraries was new to me. I'm totally going to use this in the future.
+  
+**Project Requirements**
+
+  + Complete:
+      + You definitely meet the requirement for using at least 2 variants of map 
+      + You also created more than 2 custom functions--well done!
+      + You incorporated at least one instance of parallel iteration (e.g., map2)
+      + You used at least one case of purr::nest %>% mutate() 
+  + Still Needed:
+      + I'm unsure if this is still a requirement, but I don't think you use a function outside the basic map family (walk, reduce, modify)?
+      + I assume you are using the code to either (1) build toward a cumulative product (e.g., a data product for a client, a research article, or similar) or (2) create a tutorial on functional programming and writing functions in R... but this isn't entirely clear. 
