@@ -12,10 +12,10 @@ knitr::opts_chunk$set(warning = FALSE,
                       error = TRUE)
 
 #Load libraries
-pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis)
+pacman::p_load(colorblindr, glue, prettyR, rio, here, tidyverse, viridis)
 
 #Import data
-data <- import("./Wave1.rda")
+data <- import(here("data", "Wave1.rda"))
 ```
 
 ```{r Custom Function 1 and map_df}
