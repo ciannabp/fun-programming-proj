@@ -9,8 +9,7 @@ output: html_document
 #Set options
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
-                      error = TRUE
-                      )
+                      error = TRUE)
 
 #Load libraries
 pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis)
@@ -67,7 +66,6 @@ bfast_count %>%
                  x = "",
                  y = "Count") +
             theme (legend.position = "none")
-
 ```
 
 ```{r Custom Function 2, Paralell Iteration, and Nest Mutate}
@@ -109,7 +107,6 @@ screen_3 <- screen_2 %>%
             mutate(identity = select(., White:Other) %>% 
                    rowSums(na.rm = TRUE))
 
-
 #Filter for participants who only marked 1 race category
 #Gather data and filter for the 1 race category that each participant chose
 screen_4 <- screen_3 %>% 
@@ -134,7 +131,6 @@ screen_5 <- screen_3 %>%
                    `4` = "Asian or Pacific Islander", 
                    `5` = "Other"))
   
-
 #Create one data frame that combines those who identifiy with 1 race category and those who identify with at least 2 race categories 
 screen_6 <- left_join(screen_4, screen_5)
 
@@ -144,7 +140,6 @@ screen_7 <-  screen_6 %>%
              rowSums(na.rm = TRUE)) %>% 
              mutate(Grade = factor(Grade)) %>% 
              drop_na(c("Grade", "race"))
-
 
 #Create plot for white participants
 screen_7 %>% 
@@ -162,7 +157,6 @@ screen_7 %>%
               x = "Grade",
               y = "Average Weekly Screen Time (in minutes)") +
          theme (legend.position = "none")
-
 
 #Iterate through all racial identity options
 p <- screen_7 %>% 
@@ -183,10 +177,10 @@ p <- screen_7 %>%
           x = "Grade",
           y = "Average Weekly Screen Time (in minutes)") +
      theme(legend.position = "none",
-           plot.title = element_text(size = 12),
-           plot.subtitle = element_text(size = 10),
-           plot.caption = element_text(size = 6),
-           axis.title = element_text(size = 10))))
+           plot.title = element_text(size = 8),
+           plot.subtitle = element_text(size = 7),
+           plot.caption = element_text(size = 5),
+           axis.title = element_text(size = 6))))
 
 #Defining plots
 p1 <- p$plot[[1]]

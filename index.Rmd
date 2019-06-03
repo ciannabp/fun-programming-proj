@@ -128,9 +128,16 @@ sleep_raw <- data %>%
              filter(Grade != "NA" &
                     Insomnia != "NA" &
                     Sleep_Hours != "NA")
-
+    
 #Clean labels
-sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) 
+sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) %>% 
+              mutate(Grade = dplyr::recode(Grade, 
+                     `7` = "Grade 7", 
+                     `8` = "Grade 8" ,
+                     `9` = "Grade 9", 
+                     `10` = "Grade 10", 
+                     `11` = "Grade 11",
+                     `12` = "Grade 12"))
 
 #Split data by grade
 by_grade <- sleep_tidy %>%
@@ -197,11 +204,15 @@ p <- screen_7 %>%
      scale_fill_viridis_d() +
      theme_minimal() +
      labs(title = "Average Weekly Screen Time",
-          subtitle = glue("For {.y} Students"),
+          subtitle = glue("{.y}"),
           caption = "Data Collected 1994-1995",
           x = "Grade",
           y = "Average Weekly Screen Time (in minutes)") +
-     theme(legend.position = "none")))
+     theme(legend.position = "none",
+           plot.title = element_text(size = 8),
+           plot.subtitle = element_text(size = 7),
+           plot.caption = element_text(size = 5),
+           axis.title = element_text(size = 6))))
 
 #Defining plots
 p1 <- p$plot[[1]]
@@ -214,7 +225,6 @@ p5 <- p$plot[[5]]
 require(cowplot)
 theme_set(theme_cowplot(font_size = 12))
 plot_grid(p1, p2, p3, p4, p5)
-
 ```
 
 > Description of plot
@@ -228,17 +238,19 @@ Column {data-width=1000}
 
 ```{r Plot 3 Version 3}
 #Version 3 - R^2 values of model comparison for insomnia predicting depression across grade
-ggplot(sleep_models2, aes(model, r2)) +
-    geom_col(aes(fill = model)) +
-    facet_wrap(~Grade) +
-    scale_fill_OkabeIto() +
-    labs(title = "Model Comparison: Insomnia (M1) vs. Insomnia and Total Sleep Time (M2) Predicting Concurrent       
-         Depression Across Grades 7-12",
-         caption = "Data Collected 1994-1995",
-         x = "Model",
-         y = "R^2") +
-    guides(fill = "none") +
-    theme(legend.position = "none")
+sleep_models2 %>% 
+              mutate(fct_relevel(Grade, "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12")) %>% 
+              ggplot(aes(model, r2)) +
+                  geom_col(aes(fill = model)) +
+                  facet_wrap(~Grade) +
+                  scale_fill_OkabeIto() +
+                  labs(title = "Insomnia (Model 1) vs. Insomnia and Total Sleep Time (Model 2) Predicting Depression",
+                       caption = "Data Collected 1994-1995",
+                       x = "Model",
+                       y = "R^2") +
+                  guides(fill = "none") +
+                  theme(legend.position = "none",
+                        plot.title = element_text(size = 9))
 ```
 
 > Description of plot
