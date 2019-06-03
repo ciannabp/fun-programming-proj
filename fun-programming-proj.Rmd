@@ -14,7 +14,7 @@ knitr::opts_chunk$set(warning = FALSE,
 #Load libraries
 #install.packages("pacman")
 pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis)
-#I've never seen this package, but its super cool! I'll definitely use this in the future :) However, I hashtagged out the install.packages since it prevents the rmd from knitting
+#I hashtagged out the install.packages since it prevents the rmd from knitting
 
 #Import data
 data <- import("./Wave1.rda")
@@ -70,8 +70,6 @@ bfast_count %>%
             theme(legend.position = "none")
 ```
 
-
-I really like the color scheme you chose to use and the plot is very beautifully done and made! I also really liked how you did one custom function that lead into your map/parallel iteration, it felt very naturally done!
 
 ```{r Custom Function 2, Paralell Iteration, and Nest Mutate}
 
@@ -264,8 +262,12 @@ sleep_models2 %>%
 ```
 
 Three areas of strength:
+1. Your code is so clean, well-organized, and well-commented! It was very easy to follow what you were doing and what was going on in the data. 
+2. I really like the color scheme you chose to use for your first plot and the plot was very beautifully done and made! I also really liked how you did one custom function that lead into your map/parallel iteration for each section, it felt very naturally done!
+3. I really liked your used of cowplot to put your multiple plots on screentime by race and school year side by side. It's a great way to show all all the different plots on the same screen!
 
 One thing I learned:
+1. I've never seen the package pacman::p_load, but its super cool! I'll definitely use this in the future :) 
 
 Areas for improvement:
-1. I really liked your used of cowplot to put your multiple plots on screentime by race and school year side by side. However, once put together, the font was really small. I'd suggest increasing the font size for the title, subtitle, and labels (I changed it in the code above). It also might help space-wise to only put the caption once so it doesn't have to repeat on every plot, I added some code that does that.
+1.  However, once put together, the font was really small. I'd suggest increasing the font size for the title, subtitle, and labels (I changed it in the code above). It also might help space-wise to only put the caption once so it doesn't have to repeat on every plot, I added some code that does that.
