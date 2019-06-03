@@ -12,7 +12,9 @@ knitr::opts_chunk$set(warning = FALSE,
                       error = TRUE)
 
 #Load libraries
-install.packages("pacman")
+#install.packages("pacman") ##--- may not be necessary as you already use 'p_load' below
+#--- to load and install the library - Teresa
+
 pacman::p_load(colorblindr, glue, prettyR, rio, tidyverse, viridis)
 
 #Import data
@@ -93,7 +95,7 @@ numeric_col <- function(n) {
                lbls <- (sub("^\\([0-9]+\\) +(.+$)", "\\1", lbls))
                n <- as.numeric(sub("^\\(0*([0-9]+)\\).+$", "\\1", n))
                n <- add.value.labels(n, lbls)
-}
+} ##--- nice use of regular expressions! - Teresa
 
 #apply to all colummns
 screen_2 <- map_df(screen, ~numeric_col(.x))
@@ -106,7 +108,7 @@ screen_2 <- map_df(screen, ~numeric_col(.x))
 #Add a column that sums the number of race categories that each participant selected
 screen_3 <- screen_2 %>% 
             mutate(identity = select(., White:Other) %>% 
-                   rowSums(na.rm = TRUE))
+                   rowSums(na.rm = TRUE))   ##--- really smart and neat code! -Teresa
 
 #Filter for participants who only marked 1 race category
 #Gather data and filter for the 1 race category that each participant chose
