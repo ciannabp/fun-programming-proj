@@ -156,12 +156,10 @@ sleep_models2 <- sleep_models %>%
                  mutate(r2 = map_dbl(output, ~summary(.x)$r.squared))
 ```
 
-#Plot 1
+Plot 1
+===================================== 
 
-Column {data-width=1000}
------------------------------------------------------------------------
-
-### National Longitudinal Study of Adolescent to Adult Health (Add Health) 
+### National Longitudinal Study of Adolescent to Adult Health
 
 ```{r Plot 1}
 #Version 3 - Common breakfast food choices by grade
@@ -180,14 +178,12 @@ bfast_count %>%
             theme (legend.position = "none")
 ```
 
-> Description of plot
+> What are the most popular breakfast items for 7th-12th Graders?  Participants were asked to indicate all of the breakfast items that they consume on a regular basis. Unsurprisingly, both milk and cereal were the most commonly chosen answers while coffee, tea, and snack foods were the least commonly consumed.
 
-#Plot 2
+Plot 2
+===================================== 
 
-Column {data-width=1000}
------------------------------------------------------------------------
-
-### National Longitudinal Study of Adolescent to Adult Health (Add Health) 
+### National Longitudinal Study of Adolescent to Adult Health
 
 ```{r Plot 2}
 #Version 3 - Average Weekly Screen Time across grade, faceted by racial identity
@@ -227,14 +223,13 @@ theme_set(theme_cowplot(font_size = 12))
 plot_grid(p1, p2, p3, p4, p5)
 ```
 
-> Description of plot
+> What is the average screen time by grade iterated across race?  Participants were asked to indicate separately how many minutes per week they watched television, videos, and played videogames. We created a composite measure for general weekly screen time and found the average for each grade and dominant race category. From this we can see that for White participants, screen time gernerally decreases as grade increases. However, this pattern was not consistent for other race categories and screen time remained fairly consistent across grades for Black and African American participants. 
 
-#Plot 3
+Plot 3
+===================================== 
 
-Column {data-width=1000}
------------------------------------------------------------------------
+### National Longitudinal Study of Adolescent to Adult Health
 
-### National Longitudinal Study of Adolescent to Adult Health (Add Health) 
 
 ```{r Plot 3}
 #Version 3 - R^2 values of model comparison for insomnia predicting depression across grade
