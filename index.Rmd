@@ -19,7 +19,9 @@ knitr::opts_chunk$set(warning = FALSE,
 pacman::p_load(colorblindr, flexdashboard, glue, prettyR, rio, tidyverse, viridis)
 
 #Import data
-data <- import("data/Wave1.rda") # I had to specify the specific directory for it to work for me. maybe try using {here}?
+data <- import("data/Wave1.rda") 
+
+# BC: I had to specify the specific directory for it to work for me. maybe try using {here}?
 
 #####Visualization 1#####
 
@@ -71,6 +73,8 @@ numeric_col <- function(n) {
                n <- add.value.labels(n, lbls)
 }
 
+# BC: nice. for a simpler solution or just for future reference, you might want to look at dplyr::mutate_at.
+
 #apply to all colummns
 screen_2 <- map_df(screen, ~numeric_col(.x))
 
@@ -91,6 +95,8 @@ screen_4 <- screen_3 %>%
                    `Asian or Pacific Islander`, 
                    Other) %>% 
             filter(value == 1)
+
+# BC: I think if you use janitor::clean_names it will fix the levels of the factors for you so you don't have to deal with strings with spaces in them
   
 #For those who identify with at least 2 race categories use the column indicating which race they identify with most
 #Convert the dominant race column to a categorical column titled race
@@ -143,6 +149,8 @@ sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) %>%
 by_grade <- sleep_tidy %>%
             nest(-Grade)
 
+# BC: great! could also use group_by(Grade) %>% nest()
+
 #Model comparison (total number of sleep hours as a covariate and moderator)
 sleep_models <- by_grade %>%
                 mutate(m1 = map(data, ~lm(Depression ~ Insomnia, data = .x)),
@@ -177,7 +185,7 @@ bfast_count %>%
                  caption = "Data Collected 1994-1995",
                  x = "",
                  y = "Count") +
-            theme (legend.position = "none")
+            theme(legend.position = "none")
 ```
 
 > Description of plot
@@ -220,6 +228,8 @@ p2 <- p$plot[[2]]
 p3 <- p$plot[[3]]
 p4 <- p$plot[[4]]
 p5 <- p$plot[[5]]
+
+# BC: Could you turn this 'defining plots' part into a function? Consider if you had 100 plots instead of just 5
 
 #Plot grid
 require(cowplot)
