@@ -16,10 +16,10 @@ knitr::opts_chunk$set(warning = FALSE,
                       )
 
 #Load libraries
-pacman::p_load(colorblindr, flexdashboard, glue, prettyR, rio, tidyverse, viridis)
+pacman::p_load(colorblindr, flexdashboard, here, glue, prettyR, rio, tidyverse, viridis)
 
 #Import data
-data <- import("./Wave1.rda")
+data <- import(here("data", "Wave1.rda"))
 
 #####Visualization 1#####
 
@@ -156,14 +156,13 @@ sleep_models2 <- sleep_models %>%
                  mutate(r2 = map_dbl(output, ~summary(.x)$r.squared))
 ```
 
-#Visualization 1
+#Plot 1
 
 Column {data-width=1000}
 -----------------------------------------------------------------------
 
-### Final Version
 
-```{r Plot 1 Version 3}
+```{r Plot 1}
 #Version 3 - Common breakfast food choices by grade
 bfast_count %>% 
             gather(food, count) %>% 
@@ -182,14 +181,13 @@ bfast_count %>%
 
 > Description of plot
 
-#Visualization 2
+#Plot 2
 
 Column {data-width=1000}
 -----------------------------------------------------------------------
 
-### Final Version
 
-```{r Plot 2 Version 3}
+```{r Plot 2}
 #Version 3 - Average Weekly Screen Time across grade, faceted by racial identity
 p <- screen_7 %>% 
      group_by(Grade, race) %>% 
@@ -229,14 +227,13 @@ plot_grid(p1, p2, p3, p4, p5)
 
 > Description of plot
 
-#Visualization 3
+#Plot 3
 
 Column {data-width=1000}
 -----------------------------------------------------------------------
 
 
-
-```{r Plot 3 Version 3}
+```{r Plot 3}
 #Version 3 - R^2 values of model comparison for insomnia predicting depression across grade
 sleep_models2 %>% 
               mutate(fct_relevel(Grade, "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12")) %>% 
