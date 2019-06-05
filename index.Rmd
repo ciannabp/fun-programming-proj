@@ -234,7 +234,7 @@ plot_grid(p1, p2, p3, p4, p5)
 Column {data-width=1000}
 -----------------------------------------------------------------------
 
-### Final Version
+
 
 ```{r Plot 3 Version 3}
 #Version 3 - R^2 values of model comparison for insomnia predicting depression across grade
