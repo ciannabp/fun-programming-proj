@@ -2,14 +2,16 @@
 title: "fun-programming-proj"
 author: "Cianna Bedford-Petersen & Andrew Fridman"
 date: "5/27/2019"
-output: html_document
+output: 
+  html_document
 ---
 
 ```{r Setup}
 #Set options
 knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE,
-                      error = TRUE)
+                      error = TRUE,
+                      fig.align = "center")
 
 #Load libraries
 pacman::p_load(colorblindr, glue, prettyR, rio, here, tidyverse, viridis)
@@ -26,7 +28,8 @@ data <- import(here("data", "Wave1.rda"))
 
 #Select only necessary variables and rename
 bfast <- data %>% 
-         select(H1GH23A, H1GH23B, H1GH23C, H1GH23D, H1GH23E, H1GH23F, H1GH23G, H1GH23H, H1GH23I, H1GH23J) %>% 
+         select(H1GH23A, H1GH23B, H1GH23C, H1GH23D, H1GH23E, 
+                H1GH23F, H1GH23G, H1GH23H, H1GH23I, H1GH23J) %>% 
          rename("milk" = H1GH23A,
                 "coffee or tea" = H1GH23B,
                 "cereal" = H1GH23C,
@@ -74,7 +77,8 @@ bfast_count %>%
 
 #Select variables and rename
 screen <- data %>% 
-          select(H1GI20, H1GI6A, H1GI6B, H1GI6C, H1GI6D, H1GI6E, H1GI8, H1DA8, H1DA9, H1DA10) %>% 
+          select(H1GI20, H1GI6A, H1GI6B, H1GI6C, H1GI6D, 
+                 H1GI6E, H1GI8, H1DA8, H1DA9, H1DA10) %>% 
           rename("Grade" = H1GI20, 
                  "White" = H1GI6A,
                  "Black or African American" = H1GI6B,
@@ -192,7 +196,7 @@ p5 <- p$plot[[5]]
 #Plot grid
 require(cowplot)
 theme_set(theme_cowplot(font_size = 12))
-plot_grid(p1, p2, p3, p4, p5)
+plot_grid(p1, p2, p3, p4, p5, labels = c("A", "B", "C", "D", "E"))
 ```
 
 ```{r map2}
@@ -225,16 +229,18 @@ sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) %>%
 by_grade <- sleep_tidy %>%
             nest(-Grade)
 
-#Model comparison (total number of sleep hours as a covariate and moderator)
+#Model comparison (Insomnia vs. Insomnia covaring for sleep hours in predicting depression)
 sleep_models <- by_grade %>%
-                mutate(m1 = map(data, ~lm(Depression ~ Insomnia, data = .x)),
-                       m2 = map(data, ~lm(Depression ~ Insomnia + Sleep_Hours, data = .x)),
-                       comp12 = map2(m1, m2, anova),
+                mutate(Model1 = map(data, 
+                                    ~lm(Depression ~ Insomnia, data = .x)),
+                       Model2 = map(data, 
+                                    ~lm(Depression ~ Insomnia + Sleep_Hours, data = .x)),
+                       comp12 = map2(Model1, Model2, anova),
                        p12 = map_dbl(comp12, list("Pr(>F)", 2)))
 
 #Extracing the r^2 values by model across grade
 sleep_models2 <- sleep_models %>% 
-                 gather(model, output, m1:m2) %>%
+                 gather(model, output, Model1:Model2) %>%
                  mutate(r2 = map_dbl(output, ~summary(.x)$r.squared))
 
 #Plotting the r^2 values by model across grade
@@ -250,5 +256,5 @@ sleep_models2 %>%
                        y = "R^2") +
                   guides(fill = "none") +
                   theme(legend.position = "none",
-                        plot.title = element_text(size = 10))
+                        plot.title = element_text(size = 10, face = "bold"))
 ```

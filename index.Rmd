@@ -161,6 +161,7 @@ sleep_models2 <- sleep_models %>%
 Column {data-width=1000}
 -----------------------------------------------------------------------
 
+### National Longitudinal Study of Adolescent to Adult Health (Add Health) 
 
 ```{r Plot 1}
 #Version 3 - Common breakfast food choices by grade
@@ -186,6 +187,7 @@ bfast_count %>%
 Column {data-width=1000}
 -----------------------------------------------------------------------
 
+### National Longitudinal Study of Adolescent to Adult Health (Add Health) 
 
 ```{r Plot 2}
 #Version 3 - Average Weekly Screen Time across grade, faceted by racial identity
@@ -232,6 +234,7 @@ plot_grid(p1, p2, p3, p4, p5)
 Column {data-width=1000}
 -----------------------------------------------------------------------
 
+### National Longitudinal Study of Adolescent to Adult Health (Add Health) 
 
 ```{r Plot 3}
 #Version 3 - R^2 values of model comparison for insomnia predicting depression across grade
