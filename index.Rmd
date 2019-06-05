@@ -19,7 +19,7 @@ knitr::opts_chunk$set(warning = FALSE,
 pacman::p_load(colorblindr, flexdashboard, glue, prettyR, rio, tidyverse, viridis)
 
 #Import data
-data <- import("./Wave1.rda")
+data <- import("data/Wave1.rda") # I had to specify the specific directory for it to work for me. maybe try using {here}?
 
 #####Visualization 1#####
 
