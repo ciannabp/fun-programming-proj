@@ -1,7 +1,7 @@
 ---
 title: "Final Project Presentation"
 author: "Cianna Bedford-Petersen & Andrew Fridman"
-date: "5/27/2019"
+date: "6/7/2019"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -271,4 +271,4 @@ ggplot(sleep_models2, aes(model, r2)) +
              plot.title = element_text(size = 9, face = "bold"))
 ```
 
-> Description of plot
+> Do insomnia symptoms predict depressed mood across adolescence? Participants reported the frequency and intensity of insomnia symptoms (Likert scale 0-4), depressed mood (Likert scale 0-4), and average number of sleep hours in the past week. Model 1 posits that increased insomnia scores subsequently predict increased depressed mood. Model 2 posits that increased insomnia scores and sleep hours together predict increased depressed mood. The plot above shows the amount of variance explained for each model by grade. Based on the results, there appears to be significantly more variance explained in Model 2 as compared to Model 1 for depressed mood outcomes.
