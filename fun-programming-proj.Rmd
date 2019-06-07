@@ -217,7 +217,7 @@ sleep_raw <- data %>%
     
 #Clean labels
 sleep_tidy <- map_df(sleep_raw, ~numeric_col(.x)) %>% 
-              mutate(Grade = dplyr::recode(Grade, 
+              mutate(Grade = dplyr::recode_factor(Grade, 
                      `7` = "Grade 7", 
                      `8` = "Grade 8" ,
                      `9` = "Grade 9", 
@@ -241,20 +241,21 @@ sleep_models <- by_grade %>%
 #Extracing the r^2 values by model across grade
 sleep_models2 <- sleep_models %>% 
                  gather(model, output, Model1:Model2) %>%
-                 mutate(r2 = map_dbl(output, ~summary(.x)$r.squared))
+                 mutate(r2 = map_dbl(output, ~summary(.x)$r.squared)) %>% 
+                 select(Grade, model, r2) %>% 
+                 mutate(fct_relevel(Grade, "Grade 7", "Grade 8", "Grade 9", 
+                                           "Grade 10", "Grade 11", "Grade 12"))
 
-#Plotting the r^2 values by model across grade
-sleep_models2 %>% 
-              mutate(fct_relevel(Grade, "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12")) %>% 
-              ggplot(aes(model, r2)) +
-                  geom_col(aes(fill = model)) +
-                  facet_wrap(~Grade) +
-                  scale_fill_OkabeIto() +
-                  labs(title = "Insomnia (Model 1) vs. Insomnia and Total Sleep Time (Model 2) Predicting Depression",
-                       caption = "Data Collected 1994-1995",
-                       x = "Model",
-                       y = "R^2") +
-                  guides(fill = "none") +
-                  theme(legend.position = "none",
-                        plot.title = element_text(size = 10, face = "bold"))
+#Plotting the r^2 values by model across grade  
+ggplot(sleep_models2, aes(model, r2)) +
+       geom_col(aes(fill = model)) +
+       facet_wrap(~Grade) +
+       scale_fill_OkabeIto() +
+       labs(title = "Insomnia (Model 1) vs. Insomnia and Total Sleep Time (Model 2) Predicting Depression",
+            caption = "Data Collected 1994-1995",
+            x = "Model",
+            y = "Amount of variance explained (R^2)") +
+       guides(fill = "none") +
+       theme(legend.position = "none",
+             plot.title = element_text(size = 10, face = "bold"))
 ```
