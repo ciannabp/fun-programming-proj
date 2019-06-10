@@ -234,17 +234,9 @@ p <- screen_7 %>%
            plot.caption = element_text(size = 5),
            axis.title = element_text(size = 6))))
 
-#Defining plots
-p1 <- p$plot[[1]]
-p2 <- p$plot[[2]]
-p3 <- p$plot[[3]]
-p4 <- p$plot[[4]]
-p5 <- p$plot[[5]]
-
 #Plot grid
 require(cowplot)
-theme_set(theme_cowplot(font_size = 12))
-plot_grid(p1, p2, p3, p4, p5)
+plot_grid(plotlist = p$plot)
 ```
 
 > What is the average screen time by grade iterated across race?  Participants were asked to indicate separately how many minutes per week they watched television, videos, and played videogames. We created a composite measure for general weekly screen time and found the average for each grade and dominant race category. From this we can see that for White participants, screen time gernerally decreases as grade increases. However, this pattern was not consistent for other race categories and screen time remained fairly consistent across grades for Black and African American participants. 

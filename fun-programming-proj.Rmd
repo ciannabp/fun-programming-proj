@@ -186,17 +186,11 @@ p <- screen_7 %>%
            plot.caption = element_text(size = 5),
            axis.title = element_text(size = 6))))
 
-#Defining plots
-p1 <- p$plot[[1]]
-p2 <- p$plot[[2]]
-p3 <- p$plot[[3]]
-p4 <- p$plot[[4]]
-p5 <- p$plot[[5]]
 
 #Plot grid
 require(cowplot)
-theme_set(theme_cowplot(font_size = 12))
-plot_grid(p1, p2, p3, p4, p5)
+plot_grid(plotlist = p$plot)
+
 ```
 
 ```{r map2}
